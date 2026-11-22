@@ -19,7 +19,9 @@ option2Message BYTE "     2: Add credits to my account" ,0
 option3Message BYTE "     3: Play the guessing game" ,0
 option4Message BYTE "     4: Display my statistics" ,0
 exitMessage BYTE "     5: Exit" ,0
+
 cursorOffset BYTE "     Option: ", 0
+
 invalidInput BYTE " Invalid Input (1 - 5) Only" ,0
 
 ; OPTION 1 Finished data
@@ -34,9 +36,21 @@ errorMessage_Not_Number BYTE "Please enter a valid number!", 0
 displayAdded BYTE "The amout you have added: $ ",0
 displayNewBalance BYTE "Your new balance is: $",0 
 
-selectedOption3 BYTE "YAY Option 3 Works" ,0
+; OPTION 3 Working/Finished data
+selectedOption3 BYTE "Welcome to the guessing game!", 0
+insuficientFundsMsg BYTE "Insuficient funds. Try adding more...",14,10, 0
+fundsDeductedMsg BYTE "$1 deducted from balance.", 14,10, 0
+guessMsg BYTE "Enter your guess, 1-10 only!",14,10, 0
+lossMsgP1 BYTE "Better luck next time!", 14,10, "The winning number was: ", 0
+lossMsgP2 BYTE 14,10, "You entered: ", 0
+congratsMsg BYTE "YOU WON!!", 14,10, "YOU GET $2!", 0
+playAgainMsg BYTE "Do you want to play again?",14,10, "1 to play agian", 14,10,"2 to return to main menu.", 0
+returnToMenuMsg BYTE "Returning to main menu...",14,10, 0
 
-; OPTION 4 working on Data
+; TEST EQUIPMENT
+TESTMSG56 BYTE "this test message is here", 0
+
+; OPTION 4 Finished Data
 option4Menu BYTE "========== PLAYER STATISTICS ==========", 0 
 PlayNameHeader BYTE "	Player Name:       ", 0
 AvailableCreditHeader BYTE "	Available Credit:  $", 0
@@ -220,12 +234,9 @@ option2:
 		jmp mainMenu
 
 option3:
-	Call Clrscr
-	mov edx , OFFSET selectedOption3
+	mov edx, offset selectedOption3
 	call writeString
-	call crlf
-    call crlf
-    call WaitMsg
+	call playTheGame
 	jmp mainMenu
 
 option4:
@@ -298,10 +309,87 @@ option6:
 	jmp mainMenu
 
 endProgram:
+	; HERE WOULD BE A GREAT SPOT TO USE YOUR DELAY FEATURE, AND A GOODBYE MESSAGE.
 
 exit
 
 main endp
+
+playTheGame proc
+		push EBP
+		mov ebp, esp
+
+		call crlf
+		call crlf
+		mov eax, 5000
+		call delay
+step1 : 
+		mov eax, balance
+		cmp eax, 1
+		jae step2
+		mov edx, OFFSET insuficientFundsMsg
+		call writeString
+		jmp returnToMainMenu
+step2:
+		dec balance
+		inc totalGames
+		inc totalMoneyLost
+		mov edx, OFFSET fundsDeductedMsg
+		call writestring
+		call randomize
+		mov eax, 10
+		call randomRange
+		inc eax
+		mov random, eax
+step3: 
+		mov edx, OFFSET guessMsg
+		call WriteString
+		call ReadInt
+		jo step3
+		cmp eax, 1
+		jl step3
+		cmp eax, 10
+		jg step3
+		mov userGuess, eax
+		cmp eax, random
+		je winner
+		inc missedGuesses
+		mov edx, OFFSET lossMsgP1
+		call writestring
+		mov eax, random
+		call writeint
+		call crlf
+		mov edx, OFFSET lossMsgP2
+		call writestring
+		mov eax, userGuess
+		call writeint
+		call crlf
+		jmp step4
+winner:
+	    inc correctGuesses
+		add balance, 2
+		add totalMoneyWon, 2
+		mov edx, OFFSET congratsMsg
+		call writestring
+step4:  mov edx, OFFSET playAgainMsg
+		call writestring
+		call readint
+		cmp eax, 1
+		je step1
+		cmp eax, 2
+		je returnToMainMenu
+		jmp step4
+returntoMainMenu:
+		mov edx, OFFSET returnToMenuMsg
+		call writestring
+		mov eax, 5000
+		call delay
+
+
+		pop ebp
+		ret
+playTheGame endp
+
 end main
 
 
