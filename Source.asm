@@ -36,7 +36,7 @@ errorMessage_Not_Number BYTE "Please enter a valid number!", 0
 displayAdded BYTE "The amout you have added: $ ",0
 displayNewBalance BYTE "Your new balance is: $",0 
 
-; OPTION 3 Working/Finished data
+; OPTION 3 Finished data
 selectedOption3 BYTE "Welcome to the guessing game!", 0
 insuficientFundsMsg BYTE "Insuficient funds. Try adding more...",14,10, 0
 fundsDeductedMsg BYTE "$1 deducted from balance.", 14,10, 0
@@ -131,8 +131,10 @@ main proc
 	mov edx, offset cursorOffset
 	call writeString
 
+	;This is for reading input
 	call readInt
 	
+	; Player Options
 	cmp eax, 1
 	je option1
 
@@ -297,7 +299,8 @@ option5:
 	call writeString
 	call crlf
 	call crlf
-	call WaitMsg
+	mov eax, 500
+	call delay
 	jmp endProgram
 
 
@@ -310,8 +313,6 @@ option6:
 	jmp mainMenu
 
 endProgram:
-	; HERE WOULD BE A GREAT SPOT TO USE YOUR DELAY FEATURE, AND A GOODBYE MESSAGE.
-
 exit
 
 main endp
@@ -392,6 +393,3 @@ returntoMainMenu:
 playTheGame endp
 
 end main
-
-
-
