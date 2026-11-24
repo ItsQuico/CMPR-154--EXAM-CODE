@@ -321,7 +321,7 @@ playTheGame proc
 
 		call crlf
 		call crlf
-		mov eax, 5000
+		mov eax, 1000
 		call delay
 step1 : 
 		mov eax, balance
@@ -337,7 +337,7 @@ step2:
 		mov edx, OFFSET fundsDeductedMsg
 		call writestring
 		call randomize
-		mov eax, 10
+		mov eax, 9
 		call randomRange
 		inc eax
 		mov random, eax
@@ -382,7 +382,7 @@ step4:  mov edx, OFFSET playAgainMsg
 returntoMainMenu:
 		mov edx, OFFSET returnToMenuMsg
 		call writestring
-		mov eax, 5000
+		mov eax, 1000
 		call delay
 
 
