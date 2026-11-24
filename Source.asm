@@ -377,7 +377,7 @@ ret
 
 colorInt ENDP
 
-COMMMENT $
+COMMENT $
         This program serves as the guessing game loop.
         It has 4 steps with a conditional winner step.
         Step 1 verify balance, boots the 0 balance
