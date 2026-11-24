@@ -12,7 +12,7 @@ include Irvine32.inc
 ; MENU STUFF
 groupName BYTE "*** The Assemblers ***" ,14,10, "*** MAIN MENU ***", 0
 msg1 BYTE "Please select one of the following:" ,0
-playerName BYTE "howdy", 0
+playerName BYTE ?
 
 option1Message BYTE "     1: Display my available credit" ,0
 option2Message BYTE "     2: Add credits to my account" ,0
@@ -54,7 +54,7 @@ TESTMSG56 BYTE "this test message is here", 0
 option4Menu BYTE "========== PLAYER STATISTICS ==========", 0 
 PlayNameHeader BYTE "	Player Name:       ", 0
 AvailableCreditHeader BYTE "	Available Credit:  $", 0
-GamesPlayedHeader BYTE "	Games Played:      ", 0
+GamesPlayedHeader BYTE "	Total Games Played:", 0
 CorrectGuessesHeader BYTE "	Correct Guesses:   ", 0
 MissedGuessesHeader BYTE "	Missed Guesses:    ", 0
 MoneyWonHeader BYTE "	Money You Won:     $", 0
@@ -82,6 +82,9 @@ userInput DWORD ?
 
 .code
 main proc
+
+	
+
 
 	mainMenu:
 	call Clrscr
@@ -323,16 +326,18 @@ playTheGame proc
 
 		call crlf
 		call crlf
-		mov eax, 1000
+		mov eax, 500
 		call delay
 step1 : 
 		mov eax, balance
 		cmp eax, 1
 		jae step2
+		call crlf
 		mov edx, OFFSET insuficientFundsMsg
 		call writeString
 		jmp returnToMainMenu
 step2:
+		call crlf
 		dec balance
 		inc totalGames
 		inc totalMoneyLost
@@ -371,9 +376,11 @@ winner:
 	    inc correctGuesses
 		add balance, 2
 		add totalMoneyWon, 2
+		call crlf
 		mov edx, OFFSET congratsMsg
 		call writestring
 step4:  mov edx, OFFSET playAgainMsg
+		call crlf
 		call writestring
 		call readint
 		cmp eax, 1
@@ -384,7 +391,7 @@ step4:  mov edx, OFFSET playAgainMsg
 returntoMainMenu:
 		mov edx, OFFSET returnToMenuMsg
 		call writestring
-		mov eax, 1000
+		mov eax, 500
 		call delay
 
 
