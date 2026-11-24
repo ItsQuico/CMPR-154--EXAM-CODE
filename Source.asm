@@ -377,9 +377,19 @@ ret
 
 colorInt ENDP
 
-
+COMMMENT $
+        This program serves as the guessing game loop.
+        It has 4 steps with a conditional winner step.
+        Step 1 verify balance, boots the 0 balance
+        Step 2 note all stat changes and balance changes and preps a newly seeded random number. holds random number in random for use later
+        Step 3 prompts and takes in user guess, checks valid, then compares to random value. sends to win if win. else, documents stats for loss and send to step 4
+        Winner congragulates player on win and awards 2 credits , updates win stats
+        step 4 prompts and asks for user input to play again(step 1) or return to main menu
+        return to main menu prompts user of change, initiates delay and returns to main program menu. 
+        $
+        
 playTheGame proc
-push EBP
+push EBP              ;vital for this program to run and return
 mov ebp, esp
 
 call crlf
@@ -409,11 +419,11 @@ mov random, eax
 step3 :
 INVOKE colorText, ADDR guessMsg, yellow
 call ReadInt
-jo step3
+jo step3                                          ;overflow protection
 cmp eax, 1
 jl step3
 cmp eax, 10
-jg step3
+jg step3                                          ;reroute invalid entries to the prompt
 mov userGuess, eax
 cmp eax, random
 je winner
@@ -448,8 +458,8 @@ mov eax, 500
 call delay
 
 
-pop ebp
-ret
+pop ebp                              ;Critical to clean up the stack
+ret                                  ;Get us back to the main program
 playTheGame endp
 
 end main
