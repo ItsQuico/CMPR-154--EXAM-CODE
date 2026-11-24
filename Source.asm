@@ -338,7 +338,7 @@ step2:
 		mov edx, OFFSET fundsDeductedMsg
 		call writestring
 		call randomize
-		mov eax, 10
+		mov eax, 9
 		call randomRange
 		inc eax
 		mov random, eax
