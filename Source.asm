@@ -28,10 +28,10 @@ invalidInput BYTE " Invalid Input (1 - 5) Only" ,0
 displayAvailableBalance BYTE "Your available balance is: $" ,0
 
 ; OPTION 2 Finished data
-addCreditsPrompt BYTE "Please enter the amount you would like to add: " ,0
-errorMessage_LessThan_Zero BYTE "Please enter an amount greater than Zero!", 0
-errorMessage_GreaterThan_Twenty BYTE "Please enter an amount less than or equal to Twenty!", 0
-errorMessage_exceeds_Allowed_Balace BYTE "Exceeds amount able to add to balance!", 0 
+addCreditsPrompt BYTE "Please enter the amount you would like to add (0 - EXIT): " ,0
+errorMessage_LessThan_Zero BYTE "Please enter an amount greater than -1! (Please try again)", 0
+errorMessage_GreaterThan_Twenty BYTE "Please enter an amount less than or equal to Twenty! (Please try again)", 0
+errorMessage_exceeds_Allowed_Balace BYTE "Exceeds amount able to add to balance! (Please try again)", 0 
 errorMessage_Not_Number BYTE "Please enter a valid number!", 0
 displayAdded BYTE "The amout you have added: $ ",0
 displayNewBalance BYTE "Your new balance is: $",0 
@@ -65,7 +65,7 @@ MoneyLostHeader BYTE "	Money You Lost:    $", 0
 selectedOption5 BYTE "Closing Program, Thank you!" ,0
 
 ; NUMERIC VARIABLES
-balance DWORD 10
+balance DWORD 0
 MAX_ALLOWED DWORD 20
 amount DWORD 0
 correctGuesses DWORD 0
@@ -173,9 +173,9 @@ option2:
 	mov creditsAdded, eax
 
 	cmp eax, 0
-	JLE errorLessThanZero
+	JL errorLessThanZero
 
-	cmp eax, 20
+	cmp eax, MAX_ALLOWED
 	JG errorGreaterThanTwenty
 
 	jmp withinBounds
@@ -185,19 +185,19 @@ option2:
 		call WriteString
 		call crlf
 		call WaitMsg
-		jmp mainMenu
+		jmp option2
 
 	errorGreaterThanTwenty:
 		mov edx, OFFSET errorMessage_GreaterThan_Twenty
 		call WriteString
 		call crlf
 		call WaitMsg
-		jmp mainMenu
+		jmp option2
 
 	withinBounds:
 		mov eax, balance
 		add eax, creditsAdded
-		cmp eax, 20
+		cmp eax, MAX_ALLOWED
 		JG exceedsLimit
 		JMP allowsInput
 		exceedsLimit:
@@ -205,7 +205,7 @@ option2:
 			call WriteString
 			call crlf
 			call WaitMsg
-			jmp mainMenu
+			jmp option2
    
 		allowsInput:
 			mov balance, eax
@@ -231,9 +231,10 @@ option2:
 		call WriteString 
 		call crlf
 		call WaitMsg
-		jmp mainMenu
+		jmp option2
 
 option3:
+	call clrscr
 	mov edx, offset selectedOption3
 	call writeString
 	call playTheGame
@@ -337,7 +338,7 @@ step2:
 		mov edx, OFFSET fundsDeductedMsg
 		call writestring
 		call randomize
-		mov eax, 9
+		mov eax, 10
 		call randomRange
 		inc eax
 		mov random, eax
